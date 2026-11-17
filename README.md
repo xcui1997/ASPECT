@@ -101,7 +101,7 @@ For reproducibility, record the commit hash used in your analysis. Citation meta
 
 ## Development acknowledgment
 
-ASPECT was developed by Xin Cui in collaboration with [OpenAI Codex](https://openai.com/codex/), which assisted with implementation, testing, and documentation.
+ASPECT was developed by Xin Cui in collaboration with [OpenAI Codex](https://openai.com/codex/), which assisted with implementation, testing, and documentation. Individual Codex-assisted commits may also identify Codex as a co-author in their commit metadata.
 
 ## License and attribution
 

@@ -101,7 +101,7 @@ QTM 目录见 [Ross et al. (2019)](https://doi.org/10.1126/science.aaw6888)；�
 
 ## 开发致谢
 
-ASPECT 由 Xin Cui 与 [OpenAI Codex](https://openai.com/codex/) 协作开发；Codex 协助了代码实现、测试和文档整理。
+ASPECT 由 Xin Cui 与 [OpenAI Codex](https://openai.com/codex/) 协作开发；Codex 协助了代码实现、测试和文档整理。 有 Codex 参与的具体提交也可在提交信息中标注 Codex 为共同作者。
 
 ## 许可与致谢
 
