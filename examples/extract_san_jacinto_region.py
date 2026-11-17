@@ -1,35 +1,15 @@
-"""Extract a regional QTM-derived catalog without preselecting sequences.
+"""Extract all events in a rectangular San Jacinto region.
 
 Example: python examples/extract_san_jacinto_region.py /path/to/qtm_relo.csv
-The output contains every source event in a 15-km-wide (each side) corridor
-around a simplified regional line, at all magnitudes and all available dates.
-The line is an approximate geographic selector, not a mapped fault trace.
+No magnitude or temporal cut is imposed; all available source events whose
+coordinates lie inside the inclusive rectangle are retained.
 """
 import argparse
 from pathlib import Path
-import numpy as np
 import pandas as pd
-from pyproj import Transformer
 
-# Approximate NW-to-SE selector from San Bernardino towards the Salton region.
-SELECTOR_LON_LAT = [(-117.50, 34.15), (-117.17, 33.93), (-116.98, 33.77),
-                    (-116.70, 33.55), (-116.38, 33.25), (-115.95, 33.00)]
-CORRIDOR_KM = 15.0
-
-
-def corridor_distance_km(lon, lat):
-    """Return distance to the nearest segment in projected UTM 11N coordinates."""
-    transform = Transformer.from_crs(4326, 32611, always_xy=True)
-    vertices = np.asarray([transform.transform(*pair) for pair in SELECTOR_LON_LAT]) / 1000.0
-    east, north = transform.transform(np.asarray(lon), np.asarray(lat))
-    points = np.column_stack([east, north]) / 1000.0
-    distance = np.full(len(points), np.inf)
-    for start, end in zip(vertices[:-1], vertices[1:]):
-        vector = end - start
-        fraction = np.clip((points - start) @ vector / (vector @ vector), 0, 1)
-        closest = start + fraction[:, None] * vector
-        distance = np.minimum(distance, np.linalg.norm(points - closest, axis=1))
-    return distance
+LON_MIN, LON_MAX = -117.4, -116.4
+LAT_MIN, LAT_MAX = 33.0, 34.0
 
 
 def main():
@@ -42,9 +22,8 @@ def main():
     missing = required - set(df.columns)
     if missing:
         raise ValueError(f"Missing input columns: {sorted(missing)}")
-    mask = df.lat.notna() & df.lon.notna()
-    eligible = df.loc[mask].copy()
-    selected = eligible.loc[corridor_distance_km(eligible.lon, eligible.lat) <= CORRIDOR_KM].copy()
+    mask = df.lon.between(LON_MIN, LON_MAX, inclusive="both") & df.lat.between(LAT_MIN, LAT_MAX, inclusive="both")
+    selected = df.loc[mask].copy()
     selected.sort_values(["datetime", "event_id"], kind="stable", inplace=True)
     selected.to_csv(args.output, index=False)
     print(f"Wrote {len(selected):,} events to {args.output}")

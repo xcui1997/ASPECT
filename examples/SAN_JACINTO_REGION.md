@@ -1,17 +1,14 @@
 # San Jacinto regional QTM example
 
-`san_jacinto_region_qtm.csv` contains **288,129 events at all magnitudes**, selected from every available date in the project's locally prepared QTM-derived catalog, from 2008-01-01 through 2017-12-31 (UTC). Every input event is at most 15 km from the geographic selector described below. No sequences, magnitude classes, or time windows were manually selected. The earliest selected event is 2008-01-01 00:04:12.531 UTC and the latest is 2017-12-31 23:44:19.261 UTC. The 2008–2017 temporal coverage is limited to that of the source file, not the full historical or current QTM archive.
+`san_jacinto_region_qtm.csv` contains **292,468 events at all magnitudes**, selected from every available date in the project's locally prepared QTM-derived catalog. The inclusive rectangular selection is:
 
-This is a regional demonstration of the San Jacinto area, **not an authoritative fault-zone polygon**. The selector is a deliberately simplified line connecting (longitude, latitude, degrees):
+- Longitude: **−117.4° to −116.4°**.
+- Latitude: **33.0° to 34.0°**.
+- Time: all dates in the source, from **2008-01-01 00:04:18.539 UTC** to **2017-12-31 23:44:19.261 UTC** for the selected events.
 
-```
-(-117.50, 34.15), (-117.17, 33.93), (-116.98, 33.77),
-(-116.70, 33.55), (-116.38, 33.25), (-115.95, 33.00)
-```
+No specific sequence, magnitude class, or time window is selected before analysis. The 2008–2017 interval is a limitation of the locally available source file; it is not the full historical or current QTM archive. The rectangle contains parts of the San Jacinto region, other nearby structures, and background earthquakes; it is a geographic window, not a fault-association classification, and does not cover the entire fault system.
 
-Distances to its segments are measured in UTM zone 11N (EPSG:32611). All events within 15 km on either side or around the line's endpoints are included, irrespective of later cluster assignment. The selector is approximate; it can include nearby off-fault and background events, and it can exclude fault-zone events beyond the corridor. A mapped fault-trace dataset and its spatial uncertainty would be needed for a more formal fault-association study. The [Southern California Earthquake Data Center](https://scedc.caltech.edu/earthquake/sanjacinto.html) describes the broader multi-strand San Jacinto fault system.
-
-The CSV contains all 288,129 source events in the corridor. The regional configuration applies **M >= 0.3** at the NNA stage, leaving 80,574 events for analysis and excluding 207,555 smaller events from the subsequent workflow. The magnitude threshold is a workflow setting, not a demonstration that the catalog is complete throughout the whole area and interval. Assess magnitude completeness for a scientific analysis.
+The CSV contains all 292,468 source events inside the rectangle. The regional NNA configuration applies **M ≥ 0.3**, leaving **72,061 events** for analysis; **220,407** smaller events do not enter the subsequent workflow. This configurable magnitude threshold is not evidence of catalog completeness throughout the region and interval. Assess completeness for any scientific analysis.
 
 ## Reproduce the selection
 
@@ -21,16 +18,16 @@ Given the same project-preprocessed input file, run:
 python examples/extract_san_jacinto_region.py /path/to/qtm_relo.csv
 ```
 
-The source file has 639,723 records and SHA-256 `3c861f5beb09800b7e12b9679189558669393848c5f2a3b7146c6d5eb3fe5b22`. The resulting selection has SHA-256 `c0881882f765484244d7b94374793d13630c7174eee885ef36b694e6a571f1ac`. It is a locally prepared QTM-derived catalog, not a fresh extraction directly from an SCEDC distribution. Its earlier preprocessing and relocation history have not been independently established. The retained columns are `datetime` (UTC), `event_id`, `lat`, `lon` (degrees), `dep` (km), `mag`, and the source's `rel` flag. The extraction does not reinterpret or filter `rel`.
+The source file contains 639,723 records and has SHA-256 `3c861f5beb09800b7e12b9679189558669393848c5f2a3b7146c6d5eb3fe5b22`. The resulting CSV has SHA-256 `b7bf50fc7f68dcf4565e5f22cc58d9c441ecbeff5284d57a20e26e59d9f73d84`; independent extractions produce the same bytes. It is a locally prepared QTM-derived catalog, not a fresh extraction directly from an SCEDC distribution. Its earlier preprocessing and relocation history have not been independently established. The retained columns are `datetime` (UTC), `event_id`, `lat`, `lon` (degrees), `dep` (km), `mag`, and the source's `rel` flag. The extraction does not reinterpret or filter `rel`.
 
 To run the regional analysis, install the package with optional acceleration and supply the regional configuration:
 
 ```bash
-python -m pip install -e '.[acceleration]'
+python -m pip install -e '.[acceleration,notebook]'
 bash run_all.sh --config examples/config_san_jacinto_region.yaml
 ```
 
-Results go to `results/san_jacinto_region/`. NNA uses an exact spatial pruning algorithm; numba is strongly recommended at this scale. Runtime depends on hardware and the Python environment. Clustering and classification apply the thresholds in the configuration; they are not equivalent to mapping all physical earthquake sequences, and their numerical results depend on the selected spatial and magnitude bounds.
+Results go to `results/san_jacinto_region/`. NNA uses an exact spatial pruning algorithm; numba is strongly recommended at this scale. Runtime depends on hardware and the Python environment. Clustering and classification apply the configured thresholds; they are not equivalent to mapping all physical earthquake sequences, and their results depend on the selected spatial and magnitude bounds.
 
 ## Data citation
 

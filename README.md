@@ -38,7 +38,7 @@ python -m pip install -e '.[notebook,acceleration]'
 
 ## San Jacinto regional example
 
-The regional input includes **288,129 events across all available magnitudes** for 2008–2017, within 15 km of a six-node approximate San Jacinto fault line. The example NNA configuration applies M ≥ 0.3, retaining **80,574 events** for analysis; this is a magnitude threshold, not a selection of particular cases. The corridor is a geographic selection, not an exact fault trace, and it contains background and nearby-fault events. The source is a locally prepared QTM-derived catalog. See [data selection and provenance](examples/SAN_JACINTO_REGION.md).
+The regional input includes **292,468 events across all available magnitudes** for 2008–2017 in the rectangular area 33.0–34.0°N and 117.4–116.4°W. The example NNA configuration applies M ≥ 0.3, retaining **72,061 events** for analysis; this is a magnitude threshold, not a selection of particular cases. The rectangle is a geographic selection, not an exact fault-zone boundary, and includes background and nearby-fault events. The source is a locally prepared QTM-derived catalog. See [data selection and provenance](examples/SAN_JACINTO_REGION.md).
 
 Run the full regional workflow:
 
