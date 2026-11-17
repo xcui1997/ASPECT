@@ -2,7 +2,11 @@
 
 # ASPECT
 
+[![Tests](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml/badge.svg)](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) [![Python](https://img.shields.io/badge/python-%3E%3D3.10-blue)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 **English** | [中文](README_zh.md)
+
+[Source code](src/aspect/) | [Parameter reference](docs/parameters.md) | [San Jacinto example](notebooks/)
 
 ASPECT is a Python workflow for identifying and classifying earthquake sequences and testing their spatiotemporal migration from an earthquake catalog. Its modular algorithms and YAML configuration support both complete runs and step-by-step exploration.
 
@@ -18,42 +22,43 @@ Spatial clustering uses projected horizontal coordinates; migration distances us
 
 ## Install
 
-Python 3.10 or newer is required. From the project directory:
+Python 3.10 or newer is required. Install the core workflow from the project directory:
 
 ```bash
 python -m pip install -e .
 ```
 
-For the notebook, also install JupyterLab:
+For the regional notebooks and accelerated NNA, install the optional dependencies:
 
 ```bash
-python -m pip install jupyterlab
+python -m pip install -e '.[notebook,acceleration]'
 ```
 
-## Quick start
+`numba` is strongly recommended for the regional example; runtime depends on the machine and catalog.
 
-The default configuration runs a small QTM-derived example near the northwestern San Jacinto fault zone:
+## San Jacinto regional example
+
+The regional input includes **288,129 events across all available magnitudes** for 2008–2017, within 15 km of a six-node approximate San Jacinto fault line. The example NNA configuration applies M ≥ 0.3, retaining **80,574 events** for analysis; this is a magnitude threshold, not a selection of particular cases. The corridor is a geographic selection, not an exact fault trace, and it contains background and nearby-fault events. The source is a locally prepared QTM-derived catalog. See [data selection and provenance](examples/SAN_JACINTO_REGION.md).
+
+Run the full regional workflow:
 
 ```bash
-bash run_all.sh
+bash run_all.sh --config examples/config_san_jacinto_region.yaml
 ```
 
-Results are saved under `results/`. The command runs NNA, spatial/temporal refinement, classification and migration testing. To run an individual stage after its required inputs have been produced:
+Or open the executed notebooks in order. Each notebook runs its stage and displays the complete stage results; later notebooks require outputs from earlier stages and check their provenance.
+
+1. [Regional catalog](notebooks/00_regional_catalog.ipynb)
+2. [NNA sequence extraction](notebooks/01_nna.ipynb)
+3. [Spatial and temporal refinement](notebooks/02_refinement.ipynb)
+4. [Sequence classification](notebooks/03_classification.ipynb)
+5. [Migration detection](notebooks/04_migration.ipynb)
 
 ```bash
-python run_aspect.py --config config.yaml --steps nna
-python run_aspect.py --config config.yaml --steps dbscan
-python run_aspect.py --config config.yaml --steps classify
-python run_aspect.py --config config.yaml --steps migration_test
+jupyter lab notebooks/
 ```
 
-To inspect each stage and its figures, open [notebooks/san_jacinto_demo.ipynb](notebooks/san_jacinto_demo.ipynb):
-
-```bash
-jupyter lab notebooks/san_jacinto_demo.ipynb
-```
-
-For your own catalog, copy and edit `config.yaml`, then run `bash run_all.sh --config /path/to/config.yaml`. The input CSV must contain `datetime`, `lat`, `lon`, `dep` and `mag`: times are UTC, latitude and longitude are in degrees, and depth is in km. Paths in a configuration file are resolved relative to that file. Review magnitude thresholds, clustering and migration parameters for the target catalog; the example defaults are not universal.
+The regional configuration stores results under `results/san_jacinto_region/`. The original `config.yaml` remains a smaller 136-event smoke test; `bash run_all.sh` without arguments runs that smaller example. To use another catalog, copy a YAML, set `data_sources`, adjust parameters and run `bash run_all.sh --config /path/to/config.yaml`. Input requires `datetime`, `lat`, `lon`, `dep`, `mag`; time is UTC, coordinates are in degrees and depth in km. Paths are relative to the YAML file. See the [parameter reference](docs/parameters.md).
 
 ## Model comparison
 
@@ -61,17 +66,21 @@ The example sets the step and logarithmic reference margins to 0 and 4 IC units,
 
 ## Output
 
-- `results/text/nna_*.csv`: preliminary event assignments and nearest-neighbor information.
-- `results/text/refined_*.csv`: refined event groups and spatial-exclusion flags.
-- `results/text/classification_results.csv`: sequence features and classes.
-- `results/migration_test/migration_test_summary.csv`: model comparison, migration decision and velocity estimates.
-- `results/migration_test/migration_test_status.csv` and `migration_test_runs.csv.gz`: processing status and individual test runs.
+- `<output_dir>/text/nna_*.csv`: preliminary event assignments and nearest-neighbor information.
+- `<output_dir>/text/refined_*.csv`: refined event groups and spatial-exclusion flags.
+- `<output_dir>/text/classification_results.csv`: sequence features and classes.
+- `<output_dir>/migration_test/migration_test_summary.csv`: model comparison, migration decision and velocity estimates.
+- `<output_dir>/migration_test/migration_test_status.csv` and `migration_test_runs.csv.gz`: processing status and individual test runs.
 
 ## Example data and reproducibility
 
-The example contains 136 earthquakes from a short time and spatial window in a **locally prepared QTM-derived** catalog. See [examples/README.md](examples/README.md) for the exact selection, source provenance and references. Earlier preprocessing of the project source has not been independently verified. The example demonstrates the workflow; it is not a full-catalog or full-paper reproduction. In particular, the paper's reported 246-sequence sample includes additional review and case-specific handling that are not automatically reproduced by this general workflow.
+The regional and small examples are extracted from a **locally prepared QTM-derived** catalog. Earlier preprocessing of the project source has not been independently verified; selection boundaries, magnitude threshold and data references are recorded in [examples/README.md](examples/SAN_JACINTO_REGION.md). Neither example reproduces the full California study: the paper's 246-sequence sample includes additional review and case-specific handling not automatically reproduced by this general workflow.
 
 The QTM catalog is described by [Ross et al. (2019)](https://doi.org/10.1126/science.aaw6888); see the [Southern California Earthquake Data Center](https://scedc.caltech.edu/data/qtm-catalog.html) for catalog access and data acknowledgments.
+
+## Tests and coverage
+
+The [Tests workflow](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) runs unit tests and the small end-to-end example on Python 3.10–3.12. Coverage is reported in the workflow and provided as an XML artifact for each Python version.
 
 ## License and attribution
 

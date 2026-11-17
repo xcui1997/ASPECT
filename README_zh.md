@@ -2,7 +2,11 @@
 
 # ASPECT
 
+[![Tests](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml/badge.svg)](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) [![Python](https://img.shields.io/badge/python-%3E%3D3.10-blue)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 [English](README.md) | **中文**
+
+[源代码](src/aspect/) | [参数说明](docs/parameters_zh.md) | [San Jacinto 示例](notebooks/)
 
 ASPECT 是一个用于从地震目录中识别、分类地震序列并检验其时空迁移的 Python 工作流程。算法采用多个模块组织，可通过 YAML 配置运行完整流程，也可以分步骤检查结果。
 
@@ -18,42 +22,43 @@ ASPECT 是一个用于从地震目录中识别、分类地震序列并检验其�
 
 ## 安装
 
-需要 Python 3.10 或更新版本。在项目目录中运行：
+需要 Python 3.10 或更新版本。在项目目录中安装核心流程：
 
 ```bash
 python -m pip install -e .
 ```
 
-如需运行 Notebook，还需安装 JupyterLab：
+运行区域 Notebook 和加速 NNA，建议安装可选依赖：
 
 ```bash
-python -m pip install jupyterlab
+python -m pip install -e '.[notebook,acceleration]'
 ```
 
-## 快速开始
+区域示例强烈建议使用 `numba`；运行时间取决于机器和输入目录。
 
-默认配置使用 San Jacinto 断裂带西北段的一个小型 QTM 派生目录：
+## San Jacinto 区域示例
+
+区域输入包含可用的 **2008–2017 年全部震级共 288,129 个事件**，范围为六个节点构成的近似 San Jacinto 断裂线两侧 15 km。示例配置在 NNA 阶段施加 M ≥ 0.3 的震级门槛，剩余 **80,574 个事件**进入分析；这是震级筛选，并非挑选特定案例。该范围是地理筛选，并非精确断裂迹线，也包含背景地震及邻近断裂事件。输入来自本地处理的 QTM 派生目录，筛选和来源详见[数据说明](examples/SAN_JACINTO_REGION.md)。
+
+运行完整区域流程：
 
 ```bash
-bash run_all.sh
+bash run_all.sh --config examples/config_san_jacinto_region.yaml
 ```
 
-结果保存在 `results/` 中。脚本依次运行 NNA、空间/时间细化、分类和迁移检验。上游结果已生成时，也可以单独运行某一步：
+也可按顺序打开已执行的 Notebook。各 Notebook 运行相应阶段并展示全部结果；后面的阶段依赖前面的输出，并检查其来源与一致性。
+
+1. [区域地震目录](notebooks/00_regional_catalog.ipynb)
+2. [NNA 序列提取](notebooks/01_nna.ipynb)
+3. [空间和时间聚类细化](notebooks/02_refinement.ipynb)
+4. [序列分类](notebooks/03_classification.ipynb)
+5. [迁移判定](notebooks/04_migration.ipynb)
 
 ```bash
-python run_aspect.py --config config.yaml --steps nna
-python run_aspect.py --config config.yaml --steps dbscan
-python run_aspect.py --config config.yaml --steps classify
-python run_aspect.py --config config.yaml --steps migration_test
+jupyter lab notebooks/
 ```
 
-逐步查看结果图，请打开 [notebooks/san_jacinto_demo.ipynb](notebooks/san_jacinto_demo.ipynb)：
-
-```bash
-jupyter lab notebooks/san_jacinto_demo.ipynb
-```
-
-使用自己的目录时，复制并修改 `config.yaml`，然后运行 `bash run_all.sh --config /path/to/config.yaml`。输入 CSV 至少包含 `datetime`、`lat`、`lon`、`dep` 和 `mag`：时间为 UTC，经纬度单位为度，深度单位为 km。配置中的相对路径以配置文件所在位置为基准。请根据目标目录检查震级阈值、聚类与迁移参数；示例默认值并不适用于所有目录。
+区域配置的输出位于 `results/san_jacinto_region/`。原有 `config.yaml` 仍对应 136 个事件的小型快速测试，直接运行 `bash run_all.sh` 使用该小样本。使用自己的目录时，可复制 YAML 并修改 `data_sources` 和相关参数，再运行 `bash run_all.sh --config /path/to/config.yaml`。输入至少包含 `datetime`、`lat`、`lon`、`dep`、`mag`；时间为 UTC、经纬度为度、深度为 km。相对路径以 YAML 文件所在目录为基准，详见[参数说明](docs/parameters_zh.md)。
 
 ## 模型比较
 
@@ -61,17 +66,21 @@ jupyter lab notebooks/san_jacinto_demo.ipynb
 
 ## 输出
 
-- `results/text/nna_*.csv`：初始序列和最近邻信息。
-- `results/text/refined_*.csv`：细化后的事件分组和空间剔除标记。
-- `results/text/classification_results.csv`：序列特征和分类。
-- `results/migration_test/migration_test_summary.csv`：模型比较、迁移判定和速度估计。
-- `results/migration_test/migration_test_status.csv` 与 `migration_test_runs.csv.gz`：处理状态及逐次检验结果。
+- `<output_dir>/text/nna_*.csv`：初始序列和最近邻信息。
+- `<output_dir>/text/refined_*.csv`：细化后的事件分组和空间剔除标记。
+- `<output_dir>/text/classification_results.csv`：序列特征和分类。
+- `<output_dir>/migration_test/migration_test_summary.csv`：模型比较、迁移判定和速度估计。
+- `<output_dir>/migration_test/migration_test_status.csv` 与 `migration_test_runs.csv.gz`：处理状态及逐次检验结果。
 
 ## 示例数据与复现范围
 
-示例包含从**本地处理的 QTM 派生目录**中选取的 136 个事件，时间和空间范围较小。具体筛选条件、数据来源和引用见 [examples/README.md](examples/README.md)。项目源目录更早的预处理过程尚未独立核实。此示例用于展示流程，不能代表全目录或论文全部结果的复现；论文中的 246 条序列还包含额外复核与个案处理，通用流程不会自动重现这些步骤。
+区域及小样本示例均来自**本地处理的 QTM 派生目录**；项目源目录更早的预处理尚未独立核实。筛选范围、震级门槛和参考文献见 [examples/README.md](examples/SAN_JACINTO_REGION.md)。这些示例不是论文全部加州结果的复现：论文中的 246 条序列还包含额外复核及个案处理，通用流程不会自动执行这些步骤。
 
 QTM 目录见 [Ross et al. (2019)](https://doi.org/10.1126/science.aaw6888)；数据获取和致谢方式参见 [Southern California Earthquake Data Center](https://scedc.caltech.edu/data/qtm-catalog.html)。
+
+## 测试与覆盖率
+
+[Tests 工作流](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml)在 Python 3.10–3.12 上运行单元测试及小样本完整流程。覆盖率显示在运行日志中，并为各 Python 版本提供 XML 报告。
 
 ## 许可与致谢
 

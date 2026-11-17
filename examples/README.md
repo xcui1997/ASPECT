@@ -1,4 +1,8 @@
-# San Jacinto QTM example
+# San Jacinto QTM examples
+
+For the full regional example and selection details, see [SAN_JACINTO_REGION.md](SAN_JACINTO_REGION.md).
+
+## Small smoke-test example
 
 `san_jacinto_qtm.csv` is a small example of earthquakes near the northwestern San Jacinto fault zone, extracted from the QTM-derived, locally prepared relocation catalog used by the ASPECT project. It contains **136 events** selected with:
 
