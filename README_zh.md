@@ -2,7 +2,7 @@
 
 # ASPECT
 
-[![Tests](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml/badge.svg)](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) [![Python](https://img.shields.io/badge/python-%3E%3D3.10-blue)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Tests](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml/badge.svg)](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) [![Python](https://img.shields.io/badge/python-%3E%3D3.10-blue)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Developed with OpenAI Codex](https://img.shields.io/badge/Developed%20with-OpenAI%20Codex-087f8c)](https://openai.com/codex/)
 
 [English](README.md) | **中文**
 
@@ -81,6 +81,27 @@ QTM 目录见 [Ross et al. (2019)](https://doi.org/10.1126/science.aaw6888)；�
 ## 测试与覆盖率
 
 [Tests 工作流](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml)在 Python 3.10–3.12 上运行单元测试及小样本完整流程。覆盖率显示在运行日志中，并为各 Python 版本提供 XML 报告。
+
+## 引用
+
+使用 ASPECT 时，请引用软件及分析中使用的地震目录：
+
+> Cui, X. (2026). *ASPECT: Earthquake sequence identification and migration analysis* [Computer software]. GitHub. https://github.com/xcui1997/ASPECT
+
+```bibtex
+@misc{cui2026aspect,
+  author = {Cui, Xin},
+  title  = {ASPECT: Earthquake sequence identification and migration analysis},
+  year   = {2026},
+  url    = {https://github.com/xcui1997/ASPECT}
+}
+```
+
+为方便复现，请记录分析所用的提交哈希。引用元数据也保存在 [CITATION.cff](CITATION.cff) 中。
+
+## 开发致谢
+
+ASPECT 由 Xin Cui 与 [OpenAI Codex](https://openai.com/codex/) 协作开发；Codex 协助了代码实现、测试和文档整理。
 
 ## 许可与致谢
 

@@ -2,7 +2,7 @@
 
 # ASPECT
 
-[![Tests](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml/badge.svg)](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) [![Python](https://img.shields.io/badge/python-%3E%3D3.10-blue)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Tests](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml/badge.svg)](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) [![Python](https://img.shields.io/badge/python-%3E%3D3.10-blue)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Developed with OpenAI Codex](https://img.shields.io/badge/Developed%20with-OpenAI%20Codex-087f8c)](https://openai.com/codex/)
 
 **English** | [中文](README_zh.md)
 
@@ -81,6 +81,27 @@ The QTM catalog is described by [Ross et al. (2019)](https://doi.org/10.1126/sci
 ## Tests and coverage
 
 The [Tests workflow](https://github.com/xcui1997/ASPECT/actions/workflows/tests.yml) runs unit tests and the small end-to-end example on Python 3.10–3.12. Coverage is reported in the workflow and provided as an XML artifact for each Python version.
+
+## Citation
+
+If you use ASPECT, please cite the software and the earthquake catalogs used in your analysis:
+
+> Cui, X. (2026). *ASPECT: Earthquake sequence identification and migration analysis* [Computer software]. GitHub. https://github.com/xcui1997/ASPECT
+
+```bibtex
+@misc{cui2026aspect,
+  author = {Cui, Xin},
+  title  = {ASPECT: Earthquake sequence identification and migration analysis},
+  year   = {2026},
+  url    = {https://github.com/xcui1997/ASPECT}
+}
+```
+
+For reproducibility, record the commit hash used in your analysis. Citation metadata is also available in [CITATION.cff](CITATION.cff).
+
+## Development acknowledgment
+
+ASPECT was developed by Xin Cui in collaboration with [OpenAI Codex](https://openai.com/codex/), which assisted with implementation, testing, and documentation.
 
 ## License and attribution
 
