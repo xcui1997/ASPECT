@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use ASPECT, please cite this software and the earthquake catalogs used in your analysis."
+type: software
+title: "ASPECT: earthquake sequence identification and migration analysis"
+authors:
+  - family-names: Cui
+    given-names: Xin
+version: 0.1.0
+license: MIT

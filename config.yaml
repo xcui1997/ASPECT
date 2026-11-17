@@ -1,0 +1,116 @@
+region:
+  name: example_san_jacinto
+paths:
+  data_dir: data
+  output_dir: results
+data_sources:
+  QTM: examples/san_jacinto_qtm.csv
+output_dir: results
+min_prelim_size: 50
+calc_b_value: false
+nna_params:
+  b_value: 1.0
+  df_value: 1.6
+  p_value: 0.5
+  prune_c: null
+  lag: null
+  bp_mode: exact_pruned
+  bp_screening_margin: 1.2
+  bp_bootstrap_candidates: 32
+  bp_verify_fast_result: false
+  bp_progress_every: 10000
+  mag_thresholds:
+    QTM: 0.3
+dbscan_params:
+  min_samples: 10
+  min_cluster_size: 30
+  zone_code: null
+  manual_eps_spatial: null
+  manual_eps_temporal: null
+  eps_strategy: knee
+  spatial_eps_strategy: area
+  temporal_eps_strategy: knee
+  spatial_area_tolerance: 0.15
+  spatial_area_max_remove_fraction: 0.5
+  merge_clusters: false
+  plot_diagnostics: false
+  plot_clusters: false
+analysis_settings:
+  min_events_per_cluster: 50
+  radius_km: 100.0
+  period_years: 5
+classification_params:
+  min_parent_fraction: 0.1
+  mean_t: 0.32
+  skew: 6
+  leaf_depth: 5.0
+  mag_diff: 0.5
+  mean_t_index: 0.25
+  skew_index: 5
+  tree_b_value: null
+  tree_fractal_dim: null
+  features_greater_than:
+  - mean_t
+  - leaf_depth
+  - mean_t_index
+  features_less_than:
+  - skew
+  - skew_index
+  - mag_diff
+  use_features:
+  - mean_t
+  - skew
+  - mag_diff
+  - leaf_depth
+  compute_leaf_depth: true
+  leaf_depth_method: fast_parent_depth
+  time_origin: subevent_first
+migration_test_params:
+  front_deduplicate_events: false
+  growth_coverage: window_index_approximation
+  percentile_method: linear
+  front_definition: window_center_interpolated_distance
+  analyze_type: All
+  min_events_required: 50
+  coordinate_columns:
+  - x
+  - y
+  - dep
+  early_screen:
+    enabled: true
+    lower_percentile: 10
+    upper_percentile: 90
+    multiplier: 1.0
+  per_run_initial_trim_fraction: 0.0
+  uncertainty:
+    enabled: false
+    n_draws: 100
+    drop_rate: 0.1
+    seed_offset: 777
+  origin_n_first: 10
+  distance_percentile: 70
+  window_ratio: 0.05
+  step_ratio: 0.4
+  min_event_frac: 0.3
+  pure_models: true
+  log_positive: true
+  step_margin: 0
+  log_margin: 4
+  dic_threshold: 0.0
+  r2:
+    threshold: 0.5
+  perturbation:
+    n_subsample: 18
+    drop_rate: 0.1
+    origin_n_first: []
+    percentiles: []
+    base_seed: 4242
+  vote_threshold: 0.5
+  reason_vote_floor: 0.3
+  plot_migration: false
+  plot_none: false
+workflow_steps:
+- nna
+- dbscan
+- classify
+- migration_test

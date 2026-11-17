@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aspect-workflow"
+version = "0.1.0"
+description = "Shared ASPECT earthquake sequence workflow"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "pandas>=2.0",
+  "matplotlib",
+  "scipy",
+  "scikit-learn",
+  "seaborn",
+  "pyproj",
+  "PyYAML",
+]
+
+[project.optional-dependencies]
+notebook = ["jupyterlab>=4", "ipykernel>=6"]
+acceleration = ["numba"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
